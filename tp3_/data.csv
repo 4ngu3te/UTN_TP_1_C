@@ -1,4 +1,6 @@
-id nombre horas trabajadas sueldo3,Brade,325,20000
+id,nombre,horas,trabajadas,sueldo1,Lou,120,10000
+2,Ulrike,180,25000
+3,Brade,325,20000
 4,Kimbell,120,50000
 5,Sheelagh,220,18000
 6,Gayle,120,30000
@@ -996,4 +998,4 @@ id nombre horas trabajadas sueldo3,Brade,325,20000
 998,Jaye,75,25000
 999,Tamarra,60,15000
 1000,Saleem,60,20000
-1001,franco,90,25000
+1001,Franco,90,25000

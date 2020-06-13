@@ -338,11 +338,3 @@ void modificarMayus(char *s){
 	}
 
 }
-char salir(char* mensaje)
-{
-  char resp;
-  printf("%s",mensaje);
-  fflush(stdin);
-  scanf("%c",&resp);
-  return resp;
-}
