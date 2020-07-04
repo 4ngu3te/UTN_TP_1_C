@@ -1,256 +1,287 @@
 /*
  * Empleado.c
  *
- *  Created on: 16 may. 2020
- *      Author: FrancoGollo
+ *  Created on: 4 jul. 2020
+ *      Author: Franco
  */
-#include "Empleado.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h>
-#include <conio.h>
-#include <ctype.h>
+#include "utn.h"
+#include "Empleado.h"
+#define DISP 1
+#define OCUPADO 0
 
-int menu(){
-
-	int opcion;
-	printf("B I E N V E N I D O\n\n1-Alta Empleado\n2-Salir\n\nIngrese Opcion:");
-	fflush(stdin);
-	scanf("%d",&opcion);
-	return opcion;
+int id_auto(int f)
+{
+  static int in = 1000;
+  if(f==1)
+    {
+      in++;
+    }
+  return in;
 }
-int menu2(){
-	system("cls");
-	int opcion;
-	printf("\nB I E N V E N I D O\n\n1-Alta Empleado\n2-Modificar Empleado\n3-Baja Empleado\n4-Informes\n5-Mostrar Empleados\n6-Salir\n\nIngrese Opcion:");
-	fflush(stdin);
-	scanf("%d",&opcion);
-	return opcion;
+void inicializar(Empleado this[],int tam)
+{
+  int i;
+  for(i=0;i<tam;i++)
+    {
+      this[i].isEmpty= DISP;
+    }
 }
-int menuInformes(){
-	system("cls");
-	int opcion;
-	printf("I N F O R M E S\n\n1-Empleados ordenados por Nombre y Sector\n2-Total sueldos\n\nIngrese Opcion:");
-	fflush(stdin);
-	scanf("%d",&opcion);
-	return opcion;
-}
-void inicializarEmpleado(eEmpleado pArray[],int limite){
-	for(int i = 0;i<limite;i++){
-		pArray[i].isEmpty = 1;
+int buscarDisponible(Empleado this[],int tam)
+{
+  int i;
+  int indice;
+  for(i=0;i<tam;i++)
+    {
+      if(this[i].isEmpty == DISP)
+	{
+	  indice = i;
 	}
+    }
+  return indice;
 }
-int buscarLibre(eEmpleado pArray[],int limite){
-	int indice = -1;
-	for(int i = 0;i<limite;i++){
-		if(pArray[i].isEmpty){
-			//printf("La poscicion %d del sistema se encuentra libre",i);
-			indice = i;
-			break;
-		}
+int buscar_por_id(Empleado this[],int tam, int id)
+{
+  int i;
+  int indice;
+  for(i=0;i<tam;i++)
+    {
+      if(this[i].id == id && this[i].isEmpty == OCUPADO)
+	{
+	  indice = i;
 	}
-	return indice;
+    }
+  return indice;
 }
-int cargarEmpleado(int *idx,eEmpleado pArray[], int limite){
-	system("cls");
-	int ok = 0;
-	int indice = buscarLibre(pArray,limite);
-	eEmpleado auxEmpleado;
+int altaEmpleado(Empleado this[],int tam)
+{
+  int ok=-1;
+  int indice = buscarDisponible(this,tam);
+  Empleado Aux;
+  printf("\nAlta empleados...\n");
 
-	system("cls");
-
-	printf("\nEstamos en Alta empleado\n");
-
-	if(indice == -1){//hay lugar?
-		printf("Sistema completo\n");
-		getche();
-	}else{
-			auxEmpleado.id= *idx;
-
-			printf("\nIngrese nombre: ");
-			fflush(stdin);
-			gets(auxEmpleado.nombre);
-			modificarMayus(auxEmpleado.nombre);
-
-			printf("\nIngrese apellido: ");
-			fflush(stdin);
-			gets(auxEmpleado.apellido);
-			modificarMayus(auxEmpleado.apellido);
-
-			printf("\nIngrese Salario: ");
-			fflush(stdin);
-			scanf("%f",&auxEmpleado.salario);
-
-			printf("\nIngrese Sector: ");
-			fflush(stdin);
-			scanf("%d",&auxEmpleado.sector);
-
-			auxEmpleado.isEmpty = 0;
-
-			pArray[indice] = auxEmpleado;
-			ok = 1;
-		}
-	return ok;
-}
-int buscarPersona(int id, eEmpleado pArray[],int limite){
-	int indice = -1;
-		for(int i = 0;i<limite;i++){
-			if(pArray[i].id == id && pArray[i].isEmpty == 0){
-				//printf("La poscicion %d del sistema se encuentra libre",i);
-				indice = i;
-				break;
-			}
-		}
-		return indice;
-
-}
-void modificarDatos(eEmpleado pArray[],int limite){
-	int id;
-	int indice;
-	int modificaciones;
-		system("cls");
-		printf("\n*********MODIFICAR PERSONA*********\n");
-		mostrarPersonas(pArray,limite);
-	printf("\nIngrese el id de a modificar:");
+    if(indice==-1)
+      {
+	printf("\nNo hay lugares disponibles.");
+      }
+    else
+      {
 	fflush(stdin);
-	scanf("%d",&id);
-	indice = buscarPersona(id,pArray,limite);
-		if(indice == -1){
-			printf("No hay usuarios con ID: %d",id);
-		}else{
-			mostrarPersona(pArray[indice]);
-			printf("\nDato a modificar\n1-Nombre\n2-Apellido\n3-Salario\n4-Sector\n5.Volver\n\n");
-                    fflush(stdin);
-                    scanf("%d",&modificaciones);
-         switch(modificaciones){
-                case 1:
-                    printf("\nNuevo Nombre");
-                    fflush(stdin);
-                    gets(pArray[indice].nombre);
-                    modificarMayus(pArray[indice].nombre);
-                    break;
-                case 2:
-                    printf("\nNuevo Apellido:");
-                    fflush(stdin);
-                    gets(pArray[indice].apellido);
-                    modificarMayus(pArray[indice].apellido);
-                    break;
-                case 3:
-                    printf("\nNuevo Salario:");
-                    fflush(stdin);
-                    scanf("%f",&pArray[indice].salario);
-                    break;
-                case 4:
-                    printf("\nNueva Sector:");
-                    fflush(stdin);
-                    scanf("%d",&pArray[indice].sector);
-                    break;
-                case 5:
-                	break;
-		}
-	}
-}
-void mostrarPersonas(eEmpleado pArray[],int limite){
-	system("cls");
-	int flag = 0;
-	printf("**********LISTADO DE EMPLEADOS**********\n");
-	printf(" ID         Nombre   Apellido    Salario    Sector\n");
-		for(int i = 0;i<limite;i++){
-
-			if(pArray[i].isEmpty == 0)
-			{
-				flag = 1;
-				mostrarPersona(pArray[i]);
-			}
-
-			}
-			if(flag == 0)
-			{
-				printf("*******No hay empleados para mostrar*******");
-			}
-			getche();
-}
-void mostrarPersona(eEmpleado pArray){
-	printf("%d %15s %10s   %.2f      %d\n",pArray.id,pArray.nombre,pArray.apellido,pArray.salario,pArray.sector);
-}
-void bajaEmpleado(eEmpleado pArray[],int limite){
-	system("cls");
-	int id;
-	int indice;
-	char confirma = 's';
-	printf("\n************BAJA EMPLEADO************");
-	mostrarPersonas(pArray,limite);
-	printf("Ingrese el id del Empleado: ");
+	getString(Aux.nombre,"\nIngrese el nombre del empleado: ","Error",0,21,3);
 	fflush(stdin);
-	scanf("%d",&id);
-	indice = buscarPersona(id,pArray,limite);
-		if(indice == -1){
-			printf("\nNo hay empleados con ese ID: %d.",id);
-		}else{
-			mostrarPersona(pArray[indice]);
-			printf("\nConfirma la baja?");
-			fflush(stdin);
-			scanf("%c",&confirma);
-				if(confirma == 's'){
-					pArray[indice].isEmpty = 1;
-					printf("\nSe ha realizado la baja con exito");
-				}else{
-					printf("\nOperacion cancelada");
-				}
-		}
+	getString(Aux.apellido,"\nIngrese el apellido del empleado: ","Error",0,21,3);
+	fflush(stdin);
+	utn_getNumero(&Aux.sector,"\nIngrese el Sector: ","Error",1,10,3);
+	printf("\nIngrese Salario: ");
+	fflush(stdin);
+	scanf("%f",&Aux.salario);
+	Aux.id = id_auto(1);
+	Aux.isEmpty = OCUPADO;
+	this[indice]= Aux;
+	mostrarEmpleado(this[indice]);
+
+	ok=0;
+      }
+    if(ok==0)
+      {
+	text("\nEmpleado agregado exitosamente\n");
+	system("pause");
+      }
+    return ok;
 }
-void ordenarEmpleado(eEmpleado pArray[],int limite){
-	eEmpleado aux;
-	printf("\nOrdenando Empleados\n\n");
-	for(int i = 0;i<limite;i++){
-		for(int j = i+1;j<limite;j++){
-			if(strcmp(pArray[i].nombre,pArray[j].nombre)>=0 && pArray[i].sector > pArray[j].sector){
-				aux = pArray[i];
-				pArray[i]=pArray[j];
-				pArray[j]= aux;
-
-			}
-		}
-	}
-	mostrarPersonas(pArray,limite);
-	getche();
+void mostrarEmpleado(Empleado this)
+{
+  fflush(stdin);
+  printf("\n%d  %14s  %14s %.2f%5d\n",this.id,this.nombre,this.apellido,this.salario,this.sector);
 }
-
-void informeTotalSueldos(eEmpleado pArray[],int limite){
-	float total = 0;
-	float promedio = 0;
-	int cantidadEmpleados;
-		for(int i = 0;i<limite;i++){
-			total = total + pArray[i].salario;
-			cantidadEmpleados = i;
-		}
-		fflush(stdin);
-		printf("\nEl total de los sueldos es $ %.2f",total);
-		promedio = total / cantidadEmpleados;
-		printf("\nEl promedio de los sueldos es $ %.2f",promedio);
-
-		for(int j = 0;j<limite;j++){
-			if(pArray[j].salario > promedio){
-				printf("\nSuperan el promedio de sueldos:\n");
-				mostrarPersona(pArray[j]);
-			}
-		}
-
-		getche();
-
-}
-
-void modificarMayus(char *s){
-	int indice = 1;
-	s[0]=toupper(s[0]);
-	while(s[indice]!= '\0'){
-		s[indice] = tolower(s[indice]);
-		if(s[indice] == ' '){
-			s[indice+1]=toupper(s[indice+1]);
-			indice++;
-		}
-		indice++;
+void mostrarEmpleados(Empleado this[],int tam)
+{
+  int i;
+  text("\nID          NOMBRE         APELLIDO    SALARIO  SECTOR\n");
+  for(i=0;i<tam;i++)
+    {
+      if(this[i].isEmpty == OCUPADO)
+	{
+	  mostrarEmpleado(this[i]);
 	}
 
+    }
 }
+int bajaEmpleado(Empleado this[],int tam)
+{
+  int ok = -1;
+  int id;
+  int indice;
+  char respuesta;
+  text("\nBaja de empleados:....");
+  mostrarEmpleados(this,tam);
+  utn_getNumero(&id,"\nIngrese el id del empleado a dar de baja: ","\nID INVALIDO",0,9999,3);
+  fflush(stdin);
+  indice = buscar_por_id(this,tam,id);
+    if(indice==-1)
+      {
+	printf("\n\nNo hay empleado con el id: %d",id);
+      }
+    else
+      {
+	mostrarEmpleado(this[indice]);
+	utn_getCaracter(&respuesta,"Desea eliminar al empleado? s/n : ","Error",'n','s',3);
+	fflush(stdin);
+	if(respuesta == 's')
+	  {
+	    this[indice].isEmpty = DISP;
+	    text("\nEmpleado dado de baja exitosamente.\n");
+	    ok=0;
+	  }
+
+      }
+
+  return ok;
+}
+int modificarEmpleado(Empleado this[],int tam)
+{
+  int ok=-1;
+  int id;
+  int op;
+  int indice;
+  fflush(stdin);
+  system("cls");
+  mostrarEmpleados(this,tam);
+  utn_getNumero(&id,"\nIngrese el id del empleado a modificar: ","\nID INVALIDO",1000,9999,3);
+  indice = buscar_por_id(this,tam,id);
+  if(indice==-1)
+    {
+      printf("\n\nNo hay empleado con el id: %d",id);
+    }
+  else
+    {
+      mostrarEmpleado(this[indice]);
+
+      do
+	{
+	  fflush(stdin);
+	  utn_getNumero(&op,"\n1.Cambiar Nombre."
+	  			"\n2.Cambiar Apellido."
+	  			"\n3.Cambiar Salario."
+	  			"\n4.Cambiar Sector."
+	  			"\n5.Salir"
+	  			"\n-->:","\nID INVALIDO",1,5,3);
+
+	  switch(op)
+	    {
+	    case 1:
+	      printf("\nNuevo Nombre:");
+	      fflush(stdin);
+	      gets(this[indice].nombre);
+	      modificarMayus(this[indice].nombre);
+	      ok=0;
+	      break;
+	    case 2:
+	      printf("\nNuevo Apellido:");
+	      fflush(stdin);
+	      gets(this[indice].apellido);
+	      modificarMayus(this[indice].apellido);
+	      ok=0;
+	      break;
+	    case 3:
+	      printf("\nNuevo Salario: ");
+	      fflush(stdin);
+	      scanf("%f",&this[indice].salario);
+	      ok=0;
+	      break;
+	    case 4:
+	      utn_getNumero(&this[indice].sector,"\nNuevo Sector: ","Error",1,10,3);
+	      ok=0;
+	      break;
+	    }
+	  if(ok==0)
+	    {
+	      system("cls");
+	      text("Modificado correctamente\n\n");
+	      mostrarEmpleado(this[indice]);
+	    }
+	}while(op!=5);
+
+    }
+  return ok;
+}
+
+int ordenarEmpleados(Empleado this[],int tam)
+{
+  int i;
+  int j;
+  int ok =-1;
+  Empleado Aux;
+
+  for(i=0;i<tam-1;i++)
+    {
+      for(j=i+1;j<tam;j++)
+	{
+	  if(strcmp(this[i].apellido,this[j].apellido)>=0 && this[i].sector > this[j].sector)
+	    {
+	      Aux = this[i];
+	      this[i] = this[j];
+	      this[j] = Aux;
+	      ok=0;
+	    }
+	}
+    }
+  return ok;
+}
+int total_y_promedios(Empleado this[],int tam)
+{
+  int i,k;
+  int ok=-1;
+  float total=0;
+  float promedio;
+  int cant_empleados;
+    for(i=0;i<tam;i++)
+      {
+	if(this[i].isEmpty == OCUPADO)
+	  {
+	    total+=this[i].salario;
+	  }
+      }
+    promedio = total / i;
+   for(k=0;k<tam;k++)
+     {
+       if(this[k].isEmpty == OCUPADO && this[k].salario > promedio)
+	 {
+	   cant_empleados = k;
+	 }
+     }
+    printf("\nLa totalidad de los sueldos pagados es %.2f...",total);
+    printf("\nEl promedio de los salarios es: %.2f...",promedio);
+    printf("\nLa cantidad de empleados que superan el salario promedio: %d\n\n",cant_empleados);
+  return ok;
+}
+int informes(Empleado  this[],int tam)
+{
+  int ok = -1;
+  int op;
+  do
+    {
+      utn_getNumero(&op,"\n1. Listado de los empleados ordenados alfabéticamente por Apellido y Sector."
+			"\n2. Total y promedio de los salarios, y cuántos empleados superan el salario promedio."
+			"\n3. Salir."
+			"\n-->: ","\nOpcion invalida...\n",1,3,3);
+      switch(op)
+      {
+	case 1:
+	  if(ordenarEmpleados(this,tam)==0)
+	    {
+	      text("\nEmpleados ordenados correctamente...\n\n");
+	      mostrarEmpleados(this,tam);
+	    }
+	  break;
+	case 2:
+	  total_y_promedios(this,tam);
+	  break;
+      }
+    }while(op!=3);
+  return ok;
+}
+
+

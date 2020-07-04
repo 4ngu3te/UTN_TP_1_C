@@ -1,7 +1,7 @@
 /*
  * Empleado.h
  *
- *  Created on: 16 may. 2020
+ *  Created on: 4 jul. 2020
  *      Author: FrancoGollo
  */
 
@@ -9,26 +9,26 @@
 #define EMPLEADO_H_
 
 typedef struct{
-	int id;
-	char nombre[20];
-	char apellido[20];
-	float salario;
-	int sector;
-	int isEmpty;
-}eEmpleado;
+  int id;
+  char nombre[21];
+  char apellido[21];
+  float salario;
+  int sector;
+  int isEmpty;
+}Empleado;
 
 #endif /* EMPLEADO_H_ */
 
-int menu();
-int menu2();
-int menuInformes();
-void inicializarEmpleado(eEmpleado pArray[],int limite);
-int buscarLibre(eEmpleado pArray[],int limite);
-int cargarEmpleado(int *idx,eEmpleado pArray[], int limite);
-void modificarDatos(eEmpleado pArray[],int limite);
-void mostrarPersonas(eEmpleado pArray[],int limite);
-void mostrarPersona(eEmpleado pArray);
-void bajaEmpleado(eEmpleado pArray[],int limite);
-void ordenarEmpleado(eEmpleado pArray[],int limite);
-void informeTotalSueldos(eEmpleado pArray[],int limite);
-void modificarMayus(char *s);
+
+int id_auto(int f);
+void inicializar(Empleado this[],int tam);
+int buscarDisponible(Empleado this[],int tam);
+int buscar_por_id(Empleado this[],int tam, int id);
+int altaEmpleado(Empleado this[],int tam);
+void mostrarEmpleado(Empleado this);
+void mostrarEmpleados(Empleado this[],int tam);
+int bajaEmpleado(Empleado this[],int tam);
+int modificarEmpleado(Empleado this[],int tam);
+int ordenarEmpleados(Empleado this[],int tam);
+int total_y_promedios(Empleado this[],int tam);
+int informes(Empleado  this[],int tam);
